@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SkyPort — Airport Check-In System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+
+<!-- ══ NAVBAR ══ -->
+<nav class="navbar" id="navbar">
+  <div class="nav-brand">
+    <div class="nav-logo-circle">
+      <svg class="nav-plane-svg" viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+    </div>
+    <span class="nav-title">Sky<span class="accent">Port</span></span>
+  </div>
+  <div class="nav-center" id="stepIndicatorNav" style="display:none">
+    <div class="mini-steps" id="miniSteps"></div>
+  </div>
+  <div class="nav-right">
+    <div class="nav-clock-wrap">
+      <span style="font-size:12px">🕐</span>
+      <span id="clock">--:--:--</span>
+    </div>
+    <div class="emu-status-badge" id="emuStatusBadge" title="click for details">
+      <span class="emu-dot" id="emuDot"></span>
+      <span class="emu-label">EMU 8086</span>
+      <span class="emu-state" id="emuState">Checking…</span>
+    </div>
+  </div>
+</nav>
+
+<!-- ══ SPLIT HERO ══ -->
+<section class="split-hero" id="landing">
+  <!-- LEFT: White content panel -->
+  <div class="sh-left">
+    <div class="sh-left-inner">
+      <div class="sh-eyebrow"><span class="sh-dot"></span> Digital Boarding System</div>
+      <h1 class="sh-title">Seamless<br><span class="sh-accent">Airport Check-In</span></h1>
+      <p class="sh-desc">Professional check-in. Register once, fly with confidence across India.</p>
+      <div class="sh-cards">
+        <div class="sh-card" onclick="showPanel('registerPanel')">
+          <div class="sh-card-icon-wrap sh-icon-pale">📝</div>
+          <div class="sh-card-info">
+            <div class="sh-card-title">New Passenger</div>
+            <div class="sh-card-sub">Register and receive your booking reference</div>
+          </div>
+          <div class="sh-card-arrow">→</div>
+        </div>
+        <div class="sh-card sh-card-red" onclick="showPanel('checkinPanel')">
+          <div class="sh-card-icon-wrap sh-icon-red">✈</div>
+          <div class="sh-card-info">
+            <div class="sh-card-title">Online Check-In</div>
+            <div class="sh-card-sub">Already have a booking reference?</div>
+          </div>
+          <div class="sh-card-arrow">→</div>
+        </div>
+      </div>
+      <div class="sh-pills">
+        <div class="sh-pill"><span id="livePax">0</span> Passengers</div>
+        <div class="sh-pill"><span id="liveFlights">0</span> Flights</div>
+        <div class="sh-pill sh-pill-green">● System Online</div>
+        <div class="sh-pill sh-pill-red" onclick="scrollToSection('dashSection')">📊 Dashboard</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: Red panel with aircraft image -->
+  <div class="sh-right">
+    <div class="sh-arch"></div>
+    <div class="sh-float sh-float-tr"><span>🛫</span> Ready to fly</div>
+    <div class="sh-visual">
+      <img
+        class="sh-aircraft-img"
+        src="https://images.unsplash.com/photo-1583997052301-c49b5d04fe9e?w=1000&q=90"
+        alt="Modern aircraft"
+        onerror="this.src='https://images.unsplash.com/photo-1578894381163-e72c17f2d45f?w=1000&q=90'"
+      />
+      <div class="sh-img-card">
+        <div class="sh-img-card-row">
+          <div class="sh-img-city">
+            <div class="sh-img-code">MAA</div>
+            <div class="sh-img-name">Chennai</div>
+          </div>
+          <div class="sh-img-mid">
+            <div class="sh-img-plane">✈</div>
+            <div class="sh-img-line"></div>
+          </div>
+          <div class="sh-img-city" style="text-align:right">
+            <div class="sh-img-code">DEL</div>
+            <div class="sh-img-name">Delhi</div>
+          </div>
+        </div>
+        <div class="sh-img-meta">
+          <span>AI 202 · 6h 30m</span>
+          <span class="sh-img-status">● On Time</span>
+        </div>
+      </div>
+    </div>
+    <div class="sh-float sh-float-bl"><span>🧳</span> Baggage Checked</div>
+    <div class="sh-float sh-float-br"><span>✅</span> Check-in Complete</div>
+    <div class="sh-stats-strip">
+      <div class="sh-stat"><div class="sh-stat-n">11</div><div class="sh-stat-l">Routes</div></div>
+      <div class="sh-stat-sep"></div>
+      <div class="sh-stat"><div class="sh-stat-n">5</div><div class="sh-stat-l">Airlines</div></div>
+      <div class="sh-stat-sep"></div>
+      <div class="sh-stat"><div class="sh-stat-n">24/7</div><div class="sh-stat-l">Available</div></div>
+      <div class="sh-stat-sep"></div>
+      <div class="sh-stat"><div class="sh-stat-n">EMU</div><div class="sh-stat-l">8086 Powered</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ DASHBOARD SECTION ══ -->
+<section class="dash-section" id="dashSection">
+
+  <!-- DASHBOARD NAV MENU -->
+  <div class="dash-nav">
+    <div class="dash-nav-inner">
+      <button class="dnav-btn active" onclick="showDash('dash-checkin')">✈ Check-In</button>
+      <button class="dnav-btn" onclick="showDash('dash-timetable')">🕐 Timetable</button>
+      <button class="dnav-btn" onclick="showDash('dash-tripplan')">🗺 Trip Planner</button>
+      <button class="dnav-btn" onclick="showDash('dash-status')">📡 Flight Status</button>
+    </div>
+  </div>
+
+  <!-- TAB: CHECK-IN -->
+  <div class="dash-tab active" id="dash-checkin">
+    <div class="dash-container">
+      <div class="dash-heading-row">
+        <div><div class="dash-label">Quick Access</div><h2 class="dash-title">Start Your Journey</h2></div>
+      </div>
+      <div class="quick-grid">
+        <div class="qcard qcard-red" onclick="showPanel('registerPanel')">
+          <div class="qcard-icon">📝</div>
+          <div class="qcard-title">Register</div>
+          <div class="qcard-sub">New passenger registration</div>
+          <div class="qcard-arrow">→</div>
+        </div>
+        <div class="qcard qcard-white" onclick="showPanel('checkinPanel')">
+          <div class="qcard-icon">✈</div>
+          <div class="qcard-title">Check-In</div>
+          <div class="qcard-sub">Use your booking reference</div>
+          <div class="qcard-arrow">→</div>
+        </div>
+        <div class="qcard qcard-white" onclick="showDash('dash-timetable')">
+          <div class="qcard-icon">🕐</div>
+          <div class="qcard-title">Timetable</div>
+          <div class="qcard-sub">View all flight schedules</div>
+          <div class="qcard-arrow">→</div>
+        </div>
+        <div class="qcard qcard-white" onclick="showDash('dash-tripplan')">
+          <div class="qcard-icon">🗺</div>
+          <div class="qcard-title">Trip Planner</div>
+          <div class="qcard-sub">Explore destinations</div>
+          <div class="qcard-arrow">→</div>
+        </div>
+      </div>
+
+      <!-- Live Status Cards -->
+      <div class="status-cards">
+        <div class="sc-stat">
+          <div class="sc-stat-icon" style="background:rgba(200,16,46,0.1);color:var(--red)">✈</div>
+          <div><div class="sc-stat-num" id="sc1">11</div><div class="sc-stat-label">Total Flights Today</div></div>
+        </div>
+        <div class="sc-stat">
+          <div class="sc-stat-icon" style="background:rgba(22,163,74,0.1);color:#16a34a">✅</div>
+          <div><div class="sc-stat-num" style="color:#16a34a">8</div><div class="sc-stat-label">On Time</div></div>
+        </div>
+        <div class="sc-stat">
+          <div class="sc-stat-icon" style="background:rgba(217,119,6,0.1);color:#d97706">⏳</div>
+          <div><div class="sc-stat-num" style="color:#d97706">2</div><div class="sc-stat-label">Delayed</div></div>
+        </div>
+        <div class="sc-stat">
+          <div class="sc-stat-icon" style="background:rgba(24,95,165,0.1);color:#185FA5">🛫</div>
+          <div><div class="sc-stat-num" style="color:#185FA5">1</div><div class="sc-stat-label">Boarding Now</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: TIMETABLE -->
+  <div class="dash-tab" id="dash-timetable">
+    <div class="dash-container">
+      <div class="dash-heading-row">
+        <div><div class="dash-label">Live Schedule</div><h2 class="dash-title">Flight Timetable</h2></div>
+        <div class="tt-filter-row">
+          <input type="text" id="ttFilter" class="tt-filter-input" placeholder="Filter by city or airline…" oninput="filterHomeTimetable()" />
+        </div>
+      </div>
+      <div class="home-tt-wrap">
+        <table class="home-tt">
+          <thead>
+            <tr>
+              <th>Flight</th><th>Airline</th><th>From</th><th>To</th><th>Dep</th><th>Arr</th><th>Duration</th><th>Aircraft</th><th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="homeTTBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: TRIP PLANNER -->
+  <div class="dash-tab" id="dash-tripplan">
+    <div class="dash-container">
+      <div class="dash-heading-row">
+        <div><div class="dash-label">Explore India</div><h2 class="dash-title">Trip Planner</h2></div>
+        <div class="dest-filter-pills" id="destFilters">
+          <button class="dp-pill active" onclick="filterDest('all',this)">All</button>
+          <button class="dp-pill" onclick="filterDest('metro',this)">🏙 Metro</button>
+          <button class="dp-pill" onclick="filterDest('beach',this)">🏖 Beach</button>
+          <button class="dp-pill" onclick="filterDest('heritage',this)">🏛 Heritage</button>
+          <button class="dp-pill" onclick="filterDest('hill',this)">⛰ Hill Station</button>
+          <button class="dp-pill" onclick="filterDest('spiritual',this)">🕌 Spiritual</button>
+        </div>
+      </div>
+      <div class="dest-grid" id="destGrid"></div>
+    </div>
+  </div>
+
+  <!-- TAB: FLIGHT STATUS -->
+  <div class="dash-tab" id="dash-status">
+    <div class="dash-container">
+      <div class="dash-heading-row">
+        <div><div class="dash-label">Real-Time</div><h2 class="dash-title">Flight Status</h2></div>
+      </div>
+      <div class="status-search-bar">
+        <input type="text" id="statusSearch" class="tt-filter-input" placeholder="Enter flight number e.g. AI202…" style="max-width:320px" oninput="searchFlightStatus()" />
+      </div>
+      <div id="statusResult" class="status-result-area"></div>
+      <div class="status-board" id="statusBoard"></div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ══ DESTINATION MODAL ══ -->
+<div class="dest-modal-bg" id="destModalBg" onclick="closeDestModal()"></div>
+<div class="dest-modal" id="destModal">
+  <button class="dest-modal-close" onclick="closeDestModal()">✕</button>
+  <div id="destModalContent"></div>
+</div>
+
+<!-- ══ OVERLAY ══ -->
+<div class="overlay-backdrop" id="backdrop" onclick="closePanel()"></div>
+
+<!-- ══ REGISTER PANEL ══ -->
+<div class="side-panel" id="registerPanel">
+  <div class="sp-header">
+    <div>
+      <div class="sp-badge"> Register</div>
+      <h2>New Passenger Registration</h2>
+      <p>Fill in your details to receive a Booking Reference &amp; Password</p>
+    </div>
+    <button class="sp-close" onclick="closePanel()">✕</button>
+  </div>
+  <div class="sp-body">
+    <div class="form-section-title">Personal Details</div>
+    <div class="fg"><label>Full Name *</label><input type="text" id="r_name" class="fi" placeholder="e.g. Priya Sharma" /></div>
+    <div class="form-row">
+      <div class="fg"><label>Email Address *</label><input type="email" id="r_email" class="fi" placeholder="you@email.com" /></div>
+      <div class="fg"><label>Phone Number *</label><input type="tel" id="r_phone" class="fi" placeholder="10-digit number" maxlength="10" /></div>
+    </div>
+
+    <div class="form-section-title">Flight Search</div>
+    <div class="form-row">
+      <div class="fg">
+        <label>From (Source City) *</label>
+        <input type="text" id="r_source_input" class="fi" placeholder="e.g. Chennai" oninput="clearFlightSearch()" />
+      </div>
+      <div class="fg">
+        <label>To (Destination City) *</label>
+        <input type="text" id="r_dest_input" class="fi" placeholder="e.g. Delhi" oninput="clearFlightSearch()" />
+      </div>
+    </div>
+    <button class="btn-search-flights" id="searchFlightsBtn" onclick="searchFlights()">🔍 Search Available Flights</button>
+
+    <div id="flightSearchResults" style="display:none">
+      <div class="flights-found-label" id="flightsFoundLabel"></div>
+      <div class="flight-cards-grid" id="flightCardsGrid"></div>
+    </div>
+    <div id="flightNoResults" class="flight-no-results" style="display:none"></div>
+
+    <input type="hidden" id="r_flight" />
+    <input type="hidden" id="r_airline" />
+    <input type="hidden" id="r_source" />
+    <input type="hidden" id="r_dest" />
+
+    <div id="flightDateBaggageRow" style="display:none">
+      <div class="selected-flight-banner" id="selectedFlightBanner"></div>
+      <div class="form-row">
+        <div class="fg"><label>Flight Date *</label><input type="date" id="r_date" class="fi" /></div>
+        <div class="fg"><label>Baggage Limit (set by airline)</label><input type="number" id="r_blimit" class="fi" readonly style="opacity:0.65;cursor:not-allowed" /></div>
+      </div>
+    </div>
+
+    <div id="reg_errors" class="error-list" style="display:none"></div>
+    <div id="reg_success" class="success-card" style="display:none"></div>
+    <button class="btn-main full-w" onclick="registerPassenger()" id="regBtn">📝 Register &amp; Get Booking Reference</button>
+  </div>
+</div>
+
+<!-- ══ CHECK-IN PANEL ══ -->
+<div class="side-panel" id="checkinPanel">
+  <div class="sp-header">
+    <div>
+      <div class="sp-badge"> Check-In</div>
+      <h2>Online Check-In</h2>
+      <p>Enter your Booking Reference to begin check-in</p>
+    </div>
+    <button class="sp-close" onclick="closePanel()">✕</button>
+  </div>
+  <div class="sp-body">
+    <div class="fg">
+      <label>Booking Reference Number</label>
+      <input type="text" id="ci_ref" class="fi" placeholder="e.g. SKY1234" oninput="this.value=this.value.toUpperCase()" style="font-family:var(--font-mono);font-size:16px;letter-spacing:3px" />
+    </div>
+    <div id="ci_result" class="result-box" style="display:none"></div>
+    <button class="btn-main full-w" onclick="fetchEticket()" id="ciBtn">🔍 Find My Booking</button>
+  </div>
+</div>
+
+<!-- ══ CHECK-IN MAIN FLOW ══ -->
+<main class="checkin-main" id="checkinMain" style="display:none">
+  <div class="progress-bar-outer">
+    <div class="pb-inner">
+      <div class="pb-steps" id="pbSteps"></div>
+    </div>
+  </div>
+
+  <div class="steps-area" id="stepsArea">
+
+    <!-- STEP 1: E-TICKET -->
+    <div class="step-page" id="sp1" style="display:none">
+      <div class="step-card">
+        <div class="sc-header">
+          <div class="sc-mod">Module 1 · E-Ticket</div>
+          <h2>Your E-Ticket</h2>
+        </div>
+        <div class="sc-body">
+          <div id="eticket_display"></div>
+          <div class="step-nav">
+            <button class="btn-ghost" onclick="closeFull()">✕ Cancel</button>
+            <button class="btn-main" onclick="goStep(2)">Continue → Verify Identity</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2: PASSWORD -->
+    <div class="step-page" id="sp2" style="display:none">
+      <div class="step-card">
+        <div class="sc-header">
+          <div class="sc-mod">Module 2 · Verify</div>
+          <h2>Identity Verification</h2>
+        </div>
+        <div class="sc-body">
+          <div class="lock-visual">
+            <div class="lock-icon" id="lockIcon">🔒</div>
+            <div class="lock-label">Enter your 6-digit password from registration</div>
+          </div>
+          <div class="fg">
+            <label>Password</label>
+            <div class="pw-wrap">
+              <input type="password" id="pw_input" class="fi" placeholder="Enter your password" maxlength="20" />
+              <button class="eye-btn" onclick="togglePw('pw_input',this)">👁</button>
+            </div>
+          </div>
+          <div id="pw_result" class="result-box" style="display:none"></div>
+          <div class="step-nav">
+            <button class="btn-ghost" onclick="goStep(1)">← Back</button>
+            <button class="btn-main" onclick="verifyPw()" id="pwBtn">🔓 Verify Identity</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3: PASSENGER INFO -->
+    <div class="step-page" id="sp3" style="display:none">
+      <div class="step-card wide">
+        <div class="sc-header">
+          <div class="sc-mod">Passenger Details</div>
+          <h2>Confirm Your Details</h2>
+        </div>
+        <div class="sc-body">
+          <div class="info-grid" id="passengerInfoGrid"></div>
+          <div class="form-section-title">Travel Preferences</div>
+
+          <div class="pref-section">
+            <div class="fg">
+              <label>Seat Preference</label>
+              <select id="seat_pref" class="fi" onchange="updateSeatPrefCharge(this.value)">
+                <option value="window">Window Seat</option>
+                <option value="aisle">Aisle Seat</option>
+                <option value="extra_legroom">Extra Legroom</option>
+                <option value="no_preference">No Preference</option>
+              </select>
+            </div>
+            <div class="seat-pref-charges">
+              <div class="spc-card" onclick="document.getElementById('seat_pref').value='window'; updateSeatPrefCharge('window')">
+                <div class="spc-icon">🪟</div><div class="spc-name">Window</div><div class="spc-price spc-extra">+₹500</div>
+              </div>
+              <div class="spc-card" onclick="document.getElementById('seat_pref').value='aisle'; updateSeatPrefCharge('aisle')">
+                <div class="spc-icon">🚶</div><div class="spc-name">Aisle</div><div class="spc-price spc-extra">+₹300</div>
+              </div>
+              <div class="spc-card" onclick="document.getElementById('seat_pref').value='extra_legroom'; updateSeatPrefCharge('extra_legroom')">
+                <div class="spc-icon">🦵</div><div class="spc-name">Extra Legroom</div><div class="spc-price spc-extra">+₹800</div>
+              </div>
+              <div class="spc-card" onclick="document.getElementById('seat_pref').value='no_preference'; updateSeatPrefCharge('no_preference')">
+                <div class="spc-icon">🎲</div><div class="spc-name">No Preference</div><div class="spc-price spc-free">Free</div>
+              </div>
+            </div>
+            <div id="seat_pref_charge_display" class="charge-notice" style="display:none"></div>
+            <div id="seat_pref_charge_notice"></div>
+          </div>
+
+          <div class="fg"><label>Meal Preference</label>
+            <select id="meal_pref" class="fi">
+              <option value="Vegetarian">🥗 Vegetarian</option>
+              <option value="Non-Vegetarian">🍗 Non-Vegetarian</option>
+              <option value="Vegan">🌱 Vegan</option>
+              <option value="No Meal">No Meal</option>
+            </select>
+          </div>
+          <div class="fg"><label>Actual Baggage Weight (kg)</label>
+            <input type="number" id="actual_baggage" class="fi" placeholder="Enter your baggage weight in kg" min="0" max="150" step="0.1" />
+          </div>
+          <div id="info_result" class="result-box" style="display:none"></div>
+          <div class="step-nav">
+            <button class="btn-ghost" onclick="goStep(2)">← Back</button>
+            <button class="btn-main" onclick="validateInfo()" id="infoBtn">✅ Validate &amp; Continue</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4: CLASS SELECTION -->
+    <div class="step-page" id="sp4" style="display:none">
+      <div class="step-card wide">
+        <div class="sc-header">
+          <div class="sc-mod">Module 4 · Travel Class</div>
+          <h2>Choose Your Travel Class</h2>
+        </div>
+        <div class="sc-body">
+          <div class="class-selection-intro">Select your preferred travel class. Upgrades include additional charges to your base fare.</div>
+          <div class="class-grid" id="classGrid"></div>
+          <div id="class_result" class="result-box" style="display:none"></div>
+          <div id="class_charge_notice"></div>
+          <div class="step-nav">
+            <button class="btn-ghost" onclick="goStep(3)">← Back</button>
+            <button class="btn-main" onclick="confirmClass()" id="classBtn">Confirm Class &amp; Continue →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 5: SEAT MAP -->
+    <div class="step-page" id="sp5" style="display:none">
+      <div class="step-card wide">
+        <div class="sc-header">
+          <div class="sc-mod">Seat Allocation</div>
+          <h2>Select Your Seat</h2>
+        </div>
+        <div class="sc-body">
+          <div id="seatPrefChargeInfo" class="seat-pref-info-bar"></div>
+          <div class="seat-legend">
+            <span><span class="lg-dot avail"></span>Available</span>
+            <span><span class="lg-dot occ"></span>Occupied</span>
+            <span><span class="lg-dot sel"></span>Your Seat</span>
+          </div>
+          <div class="aircraft-body">
+            <div class="ac-nose">✈ <span id="flightLabel">---</span></div>
+            <div class="ac-col-labels"><span>A</span><span>B</span><span>C</span><span>D</span></div>
+            <div id="seatGrid" class="seat-grid"></div>
+          </div>
+          <div id="seat_result" class="result-box" style="display:none"></div>
+          <div class="step-nav">
+            <button class="btn-ghost" onclick="goStep(4)">← Back</button>
+            <button class="btn-main" onclick="allocateSeat()" id="seatBtn">💺 Confirm Seat</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 6: BAGGAGE -->
+    <div class="step-page" id="sp6" style="display:none">
+      <div class="step-card">
+        <div class="sc-header">
+          <div class="sc-mod">Baggage</div>
+          <h2>Baggage Charges</h2>
+        </div>
+        <div class="sc-body">
+          <div class="bag-visual">
+            <div class="bag-anim" id="bagAnim">🧳</div>
+            <div class="bag-stats">
+              <div class="bs-row"><span>Your Baggage Weight</span><strong id="bv_weight">--</strong></div>
+              <div class="bs-row"><span>Allowed Limit</span><strong id="bv_limit">--</strong></div>
+              <div class="bs-row"><span>Excess Weight</span><strong id="bv_excess" class="excess-val">--</strong></div>
+              <div class="bs-row charge"><span>Extra Charge</span><strong id="bv_charge" class="charge-val">--</strong></div>
+            </div>
+          </div>
+          <div class="meter-wrap">
+            <div class="meter-track"><div class="meter-bar" id="meterBar" style="width:0%"></div></div>
+            <div class="meter-info"><span>0 kg</span><span id="meterLimit">-- limit</span></div>
+          </div>
+          <div id="bag_result" class="result-box" style="display:none"></div>
+          <div class="step-nav">
+            <button class="btn-ghost" onclick="goStep(5)">← Back</button>
+            <button class="btn-main" onclick="calcBaggage()" id="bagBtn">🧮 Calculate Charges</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 7: BOARDING PASS -->
+    <div class="step-page" id="sp7" style="display:none">
+      <div class="step-card wide">
+        <div class="sc-header">
+          <div class="sc-mod">Boarding Pass</div>
+          <h2>Your Boarding Pass</h2>
+        </div>
+        <div class="sc-body">
+          <div class="bp-wrapper" id="boardingPassEl" style="display:none">
+            <div class="bp-card">
+              <div class="bp-main">
+                <div class="bpm-top">
+                  <div class="bpm-airline" id="bp_airline">---</div>
+                  <div class="bpm-tag">Boarding Pass</div>
+                </div>
+                <div class="bpm-route">
+                  <div class="bpm-city">
+                    <div class="bpm-code" id="bp_src">---</div>
+                    <div class="bpm-city-n" id="bp_src_name">---</div>
+                  </div>
+                  <div class="bpm-flight-path">
+                    <div class="bpm-plane">✈</div>
+                    <div class="bpm-dotline"></div>
+                  </div>
+                  <div class="bpm-city" style="text-align:right">
+                    <div class="bpm-code" id="bp_dst">---</div>
+                    <div class="bpm-city-n" id="bp_dst_name">---</div>
+                  </div>
+                </div>
+                <div class="bpm-grid">
+                  <div class="bpf"><span>Passenger Name</span><strong id="bp_name">---</strong></div>
+                  <div class="bpf"><span>Flight</span><strong id="bp_flight">---</strong></div>
+                  <div class="bpf"><span>Date</span><strong id="bp_date">---</strong></div>
+                  <div class="bpf"><span>Boarding Time</span><strong id="bp_boarding">---</strong></div>
+                  <div class="bpf"><span>Terminal</span><strong id="bp_terminal">---</strong></div>
+                  <div class="bpf"><span>Class</span><strong id="bp_class">Economy</strong></div>
+                </div>
+              </div>
+              <div class="bp-tear"></div>
+              <div class="bp-stub">
+                <div class="bps-airline" id="bps_airline">---</div>
+                <div class="bps-seat" id="bps_seat">--</div>
+                <div class="bps-seat-lbl">Seat</div>
+                <div class="bps-gate">Gate <span id="bps_gate">--</span></div>
+                <div class="bps-terminal" id="bps_terminal">---</div>
+                <div class="bps-bc">
+                  <div class="bc-lines"></div>
+                  <div class="bc-num" id="bp_number">---</div>
+                </div>
+                <div class="bps-ok">✅ Confirmed</div>
+              </div>
+            </div>
+          </div>
+
+          <div id="bp_result" class="result-box" style="display:none"></div>
+          <div class="step-nav" id="bpNav1">
+            <button class="btn-ghost" onclick="goStep(6)">← Back</button>
+            <button class="btn-main" onclick="genBP()" id="bpBtn">🖨️ Generate Boarding Pass</button>
+          </div>
+          <div class="step-nav" id="bpNav2" style="display:none">
+            <button class="btn-ghost btn-green" onclick="window.print()">🖨️ Print Pass</button>
+            <button class="btn-main" onclick="goStep(8)">View Timetable →</button>
+            <button class="btn-ghost" onclick="restartFlow()">🔄 New Check-In</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 8: TIMETABLE -->
+    <div class="step-page" id="sp8" style="display:none">
+      <div class="step-card wide">
+        <div class="sc-header">
+          <div class="sc-mod">Timetable</div>
+          <h2>Flight Timetable</h2>
+        </div>
+        <div class="sc-body">
+          <div class="tt-header-row" id="ttHeader"></div>
+          <div class="timetable-wrap">
+            <table class="timetable">
+              <thead>
+                <tr>
+                  <th>Flight</th><th>Airline</th><th>From</th><th>To</th>
+                  <th>Departure</th><th>Arrival</th><th>Duration</th><th>Status</th><th>Aircraft</th>
+                </tr>
+              </thead>
+              <tbody id="timetableBody"></tbody>
+            </table>
+          </div>
+          <div class="tt-legend"><span class="tt-your-flight-indicator">◀ Highlighted row = Your Flight</span></div>
+          <div class="step-nav">
+            <button class="btn-ghost" onclick="goStep(7)">← Back to Pass</button>
+            <button class="btn-main" onclick="restartFlow()">🔄 New Check-In</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- ══ FOOTER ══ -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="f-brand">Sky<span>Port</span></div>
+    <div class="f-divider"></div>
+    <div class="f-text">Airport Check-In System © 2026</div>
+  </div>
+</footer>
+
+<!-- ══ EMU PANEL ══ -->
+<div id="emuPanel">
+  <div class="emu-panel-header">
+    <span class="emu-panel-title">⚙Bridge Status</span>
+    <span class="emu-panel-close" onclick="closeEmuPanel()">✕</span>
+  </div>
+  <div class="emu-panel-body">
+    <div id="emuPanelContent"><div style="color:var(--gray-300);text-align:center;padding:20px;font-size:12px">Loading…</div></div>
+  </div>
+</div>
+
+<script src="/static/js/app.js"></script>
+
+<script>
+  /* ── Management Flights ── */
+  const MGMT_FLIGHTS = [
+    { flight_no: 'AI202',  airline: 'Air India',  source: 'Chennai',   destination: 'Delhi',      departure: '06:00', arrival: '08:30', aircraft: 'Boeing 737',  baggage_limit: 25 },
+    { flight_no: 'AI305',  airline: 'Air India',  source: 'Mumbai',    destination: 'Bangalore',  departure: '08:30', arrival: '10:45', aircraft: 'Airbus A320', baggage_limit: 25 },
+    { flight_no: '6E101',  airline: 'IndiGo',     source: 'Delhi',     destination: 'Mumbai',     departure: '09:15', arrival: '11:30', aircraft: 'Airbus A320', baggage_limit: 20 },
+    { flight_no: '6E215',  airline: 'IndiGo',     source: 'Hyderabad', destination: 'Chennai',    departure: '11:00', arrival: '12:15', aircraft: 'Boeing 737',  baggage_limit: 20 },
+    { flight_no: 'UK805',  airline: 'Vistara',    source: 'Bangalore', destination: 'Kolkata',    departure: '13:45', arrival: '16:30', aircraft: 'Boeing 777',  baggage_limit: 30 },
+    { flight_no: 'UK910',  airline: 'Vistara',    source: 'Delhi',     destination: 'Hyderabad',  departure: '07:20', arrival: '09:35', aircraft: 'Airbus A320', baggage_limit: 30 },
+    { flight_no: 'SG321',  airline: 'SpiceJet',   source: 'Pune',      destination: 'Goa',        departure: '15:00', arrival: '16:10', aircraft: 'Boeing 737',  baggage_limit: 15 },
+    { flight_no: 'SG450',  airline: 'SpiceJet',   source: 'Ahmedabad', destination: 'Jaipur',     departure: '10:30', arrival: '11:40', aircraft: 'ATR 72',      baggage_limit: 15 },
+    { flight_no: 'QP101',  airline: 'Akasa Air',  source: 'Mumbai',    destination: 'Goa',        departure: '17:00', arrival: '18:10', aircraft: 'Boeing 737',  baggage_limit: 20 },
+    { flight_no: 'AI0987', airline: 'Air India',  source: 'Chennai',   destination: 'Coimbatore', departure: '19:30', arrival: '20:30', aircraft: 'ATR 72',      baggage_limit: 25 },
+    { flight_no: '6E123',  airline: 'IndiGo',     source: 'Chennai',   destination: 'Coimbatore', departure: '13:30', arrival: '15:00', aircraft: 'ATR 42',      baggage_limit: 35 },
+  ];
+  const AIRLINE_ICONS = { 'Air India':'🔴','IndiGo':'🔵','Vistara':'🟣','SpiceJet':'🟠','Akasa Air':'🟡' };
+
+  function setMinDate() {
+    const d = document.getElementById('r_date');
+    if (d) d.min = new Date().toISOString().split('T')[0];
+  }
+  setMinDate();
+
+  function clearFlightSearch() {
+    document.getElementById('flightSearchResults').style.display = 'none';
+    document.getElementById('flightNoResults').style.display = 'none';
+    document.getElementById('flightDateBaggageRow').style.display = 'none';
+    ['r_flight','r_airline','r_source','r_dest','r_blimit'].forEach(id => { document.getElementById(id).value = ''; });
+  }
+
+  function searchFlights() {
+    const src = document.getElementById('r_source_input').value.trim();
+    const dst = document.getElementById('r_dest_input').value.trim();
+    if (!src || !dst) {
+      document.getElementById('flightNoResults').textContent = '⚠ Please enter both Source and Destination cities.';
+      document.getElementById('flightNoResults').style.display = 'block';
+      document.getElementById('flightSearchResults').style.display = 'none';
+      return;
+    }
+    const matches = MGMT_FLIGHTS.filter(f =>
+      f.source.toLowerCase().includes(src.toLowerCase()) &&
+      f.destination.toLowerCase().includes(dst.toLowerCase())
+    );
+    document.getElementById('flightSearchResults').style.display = 'none';
+    document.getElementById('flightNoResults').style.display = 'none';
+    document.getElementById('flightDateBaggageRow').style.display = 'none';
+
+    if (!matches.length) {
+      document.getElementById('flightNoResults').textContent = `✈ No flights found for ${src} → ${dst}. Try: Chennai → Delhi, Mumbai → Goa, etc.`;
+      document.getElementById('flightNoResults').style.display = 'block';
+      return;
+    }
+    document.getElementById('flightsFoundLabel').textContent = `✅ ${matches.length} flight${matches.length>1?'s':''} found for ${src} → ${dst}`;
+    const grid = document.getElementById('flightCardsGrid');
+    grid.innerHTML = matches.map(f => {
+      const icon = AIRLINE_ICONS[f.airline] || '✈';
+      const [dH,dM] = f.departure.split(':').map(Number);
+      const [aH,aM] = f.arrival.split(':').map(Number);
+      const durMin = (aH-dH)*60+(aM-dM);
+      const dur = `${Math.floor(durMin/60)}h ${durMin%60}m`;
+      return `<div class="flight-result-card" id="frc_${f.flight_no}" onclick="selectFlightCard('${f.flight_no}')">
+        <div class="frc-top">
+          <span class="frc-airline-icon">${icon}</span>
+          <div class="frc-airline-name">${f.airline}</div>
+          <div class="frc-flight-no">${f.flight_no}</div>
+        </div>
+        <div class="frc-route">
+          <div class="frc-time-block"><div class="frc-time">${f.departure}</div><div class="frc-city">${f.source}</div></div>
+          <div class="frc-path"><div class="frc-dur">${dur}</div><div class="frc-line"><span class="frc-plane">✈</span></div></div>
+          <div class="frc-time-block frc-right"><div class="frc-time">${f.arrival}</div><div class="frc-city">${f.destination}</div></div>
+        </div>
+        <div class="frc-footer">
+          <span class="frc-aircraft">🛩 ${f.aircraft}</span>
+          <span class="frc-baggage">🧳 <strong>${f.baggage_limit} kg</strong></span>
+          <span class="frc-select-hint">Tap to select →</span>
+        </div>
+      </div>`;
+    }).join('');
+    document.getElementById('flightSearchResults').style.display = 'block';
+  }
+
+  function selectFlightCard(flightNo) {
+    const f = MGMT_FLIGHTS.find(x => x.flight_no === flightNo);
+    if (!f) return;
+    document.querySelectorAll('.flight-result-card').forEach(c => c.classList.remove('frc-selected'));
+    const card = document.getElementById('frc_' + flightNo);
+    if (card) card.classList.add('frc-selected');
+    document.getElementById('r_flight').value = f.flight_no;
+    document.getElementById('r_airline').value = f.airline;
+    document.getElementById('r_source').value = f.source;
+    document.getElementById('r_dest').value = f.destination;
+    document.getElementById('r_blimit').value = f.baggage_limit;
+    document.getElementById('flightDateBaggageRow').style.display = 'block';
+    setMinDate();
+    const icon = AIRLINE_ICONS[f.airline] || '✈';
+    document.getElementById('selectedFlightBanner').innerHTML = `
+      <div class="sfb-inner">
+        <span class="sfb-icon">${icon}</span>
+        <div class="sfb-info">
+          <div class="sfb-title">${f.flight_no} — ${f.airline}</div>
+          <div class="sfb-sub">${f.source} → ${f.destination} · Dep ${f.departure} · ${f.baggage_limit}kg baggage</div>
+        </div>
+        <span class="sfb-check">✓ Selected</span>
+      </div>`;
+  }
+
+  const SEAT_PREF_CHARGES_INLINE = { window:500, aisle:300, extra_legroom:800, no_preference:0 };
+  function updateSeatPrefCharge(val) {
+    const charge = SEAT_PREF_CHARGES_INLINE[val] || 0;
+    const el = document.getElementById('seat_pref_charge_display');
+    if (!el) return;
+    el.style.display = 'block';
+    if (charge > 0) {
+      el.innerHTML = `💳 <strong>${val.replace('_',' ')}</strong> seat — Extra charge: <strong>₹${charge}</strong>`;
+      el.className = 'charge-notice charge-active';
+    } else {
+      el.innerHTML = `✅ No extra charge for this seat preference`;
+      el.className = 'charge-notice charge-free';
+    }
+    document.querySelectorAll('.spc-card').forEach(c => c.classList.remove('spc-card-selected'));
+    const idx = { window:0, aisle:1, extra_legroom:2, no_preference:3 }[val];
+    if (idx !== undefined) document.querySelectorAll('.spc-card')[idx]?.classList.add('spc-card-selected');
+  }
+  updateSeatPrefCharge('window');
+
+  /* ══ DASHBOARD LOGIC ══ */
+  function scrollToSection(id) {
+    document.getElementById(id)?.scrollIntoView({ behavior:'smooth' });
+  }
+
+  function showDash(id) {
+    document.querySelectorAll('.dash-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.dnav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(id)?.classList.add('active');
+    const idx = ['dash-checkin','dash-timetable','dash-tripplan','dash-status'].indexOf(id);
+    document.querySelectorAll('.dnav-btn')[idx]?.classList.add('active');
+    if (id === 'dash-timetable') renderHomeTimetable();
+    if (id === 'dash-tripplan') renderDestinations();
+    if (id === 'dash-status')   renderStatusBoard();
+  }
+
+  /* ── HOME TIMETABLE ── */
+  const TT_FLIGHTS = [
+    { flight_no:'AI202',  airline:'Air India',  source:'Chennai',   destination:'Delhi',      departure:'06:00', arrival:'08:30', aircraft:'Boeing 737',  status:'ontime' },
+    { flight_no:'AI305',  airline:'Air India',  source:'Mumbai',    destination:'Bangalore',  departure:'08:30', arrival:'10:45', aircraft:'Airbus A320', status:'ontime' },
+    { flight_no:'6E101',  airline:'IndiGo',     source:'Delhi',     destination:'Mumbai',     departure:'09:15', arrival:'11:30', aircraft:'Airbus A320', status:'delayed' },
+    { flight_no:'6E215',  airline:'IndiGo',     source:'Hyderabad', destination:'Chennai',    departure:'11:00', arrival:'12:15', aircraft:'Boeing 737',  status:'ontime' },
+    { flight_no:'UK805',  airline:'Vistara',    source:'Bangalore', destination:'Kolkata',    departure:'13:45', arrival:'16:30', aircraft:'Boeing 777',  status:'boarding' },
+    { flight_no:'UK910',  airline:'Vistara',    source:'Delhi',     destination:'Hyderabad',  departure:'07:20', arrival:'09:35', aircraft:'Airbus A320', status:'departed' },
+    { flight_no:'SG321',  airline:'SpiceJet',   source:'Pune',      destination:'Goa',        departure:'15:00', arrival:'16:10', aircraft:'Boeing 737',  status:'ontime' },
+    { flight_no:'SG450',  airline:'SpiceJet',   source:'Ahmedabad', destination:'Jaipur',     departure:'10:30', arrival:'11:40', aircraft:'ATR 72',      status:'delayed' },
+    { flight_no:'QP101',  airline:'Akasa Air',  source:'Mumbai',    destination:'Goa',        departure:'17:00', arrival:'18:10', aircraft:'Boeing 737',  status:'ontime' },
+    { flight_no:'AI0987', airline:'Air India',  source:'Chennai',   destination:'Coimbatore', departure:'19:30', arrival:'20:30', aircraft:'ATR 72',      status:'ontime' },
+    { flight_no:'6E123',  airline:'IndiGo',     source:'Chennai',   destination:'Coimbatore', departure:'13:30', arrival:'15:00', aircraft:'ATR 42',      status:'ontime' },
+  ];
+  const STATUS_MAP = { ontime:{cls:'tt-status-ontime',txt:'✅ On Time'}, delayed:{cls:'tt-status-delayed',txt:'⏳ Delayed'}, boarding:{cls:'tt-status-boarding',txt:'🛫 Boarding'}, departed:{cls:'tt-status-departed',txt:'✈ Departed'} };
+
+  function durStr(dep, arr) {
+    const [dh,dm] = dep.split(':').map(Number), [ah,am] = arr.split(':').map(Number);
+    const t = (ah-dh)*60+(am-dm);
+    return `${Math.floor(t/60)}h ${t%60}m`;
+  }
+
+  function renderHomeTimetable(filter='') {
+    const body = document.getElementById('homeTTBody');
+    if (!body) return;
+    const q = filter.toLowerCase();
+    const rows = TT_FLIGHTS.filter(f =>
+      !q || f.flight_no.toLowerCase().includes(q) ||
+      f.airline.toLowerCase().includes(q) ||
+      f.source.toLowerCase().includes(q) ||
+      f.destination.toLowerCase().includes(q)
+    );
+    const s = STATUS_MAP;
+    body.innerHTML = rows.map(f => `
+      <tr>
+        <td><span class="tt-fn" style="color:var(--red);font-weight:700">${f.flight_no}</span></td>
+        <td>${f.airline}</td>
+        <td>${f.source}</td>
+        <td>${f.destination}</td>
+        <td><strong>${f.departure}</strong></td>
+        <td><strong>${f.arrival}</strong></td>
+        <td>${durStr(f.departure,f.arrival)}</td>
+        <td><span style="font-size:12px;color:var(--gray-500)">${f.aircraft}</span></td>
+        <td><span class="tt-status ${s[f.status]?.cls||''}">${s[f.status]?.txt||f.status}</span></td>
+      </tr>`).join('');
+    if (!rows.length) body.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:24px;color:var(--gray-300)">No flights match your search.</td></tr>`;
+  }
+  function filterHomeTimetable() { renderHomeTimetable(document.getElementById('ttFilter')?.value||''); }
+
+  /* ── DESTINATIONS ── */
+  const DESTINATIONS = [
+    { id:'delhi',     name:'New Delhi',    sub:'India · North',     cat:'metro',    price:'₹2,500', tags:['History','Culture','Food','Shopping'],
+      img:'https://images.unsplash.com/photo-1587474260584-136574528ed5?w=600&q=80',
+      badge:'METRO CITY', flights:6,
+      desc:"India's vibrant capital blending ancient history with modern culture. Home to iconic monuments and world-class cuisine.",
+      places:['India Gate','Red Fort','Qutub Minar','Humayun\'s Tomb','Lotus Temple'],
+      hotels:['The Leela Palace (5★)','ITC Maurya (5★)','Taj Palace (5★)','The Oberoi (5★)'] },
+    { id:'goa',       name:'Goa',          sub:'India · West Coast', cat:'beach',    price:'₹3,200', tags:['Beach','Nightlife','Heritage','Water Sports'],
+      img:'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=600&q=80',
+      badge:'BEACH PARADISE', flights:4,
+      desc:"India's beach capital with golden sands, Portuguese heritage, and vibrant nightlife. Perfect year-round escape.",
+      places:['Baga Beach','Anjuna Beach','Basilica of Bom Jesus','Fort Aguada','Dudhsagar Falls'],
+      hotels:['Taj Exotica Resort (5★)','W Goa (5★)','The Leela (5★)','Park Hyatt Goa (5★)'] },
+    { id:'mumbai',    name:'Mumbai',       sub:'India · West',       cat:'metro',    price:'₹1,800', tags:['Business','Bollywood','Food','Beaches'],
+      img:'https://images.unsplash.com/photo-1595658658481-d53d3f999875?w=600&q=80',
+      badge:'CITY OF DREAMS', flights:8,
+      desc:"India's financial capital and entertainment hub. Experience the city that never sleeps.",
+      places:['Gateway of India','Marine Drive','Elephanta Caves','Juhu Beach','Siddhivinayak Temple'],
+      hotels:['The Taj Mahal Palace (5★)','Oberoi Mumbai (5★)','Four Seasons (5★)','ITC Grand Central (5★)'] },
+    { id:'jaipur',    name:'Jaipur',       sub:'India · Rajasthan',  cat:'heritage', price:'₹2,100', tags:['Heritage','Forts','Culture','Crafts'],
+      img:'https://images.unsplash.com/photo-1477587458883-47145ed94245?w=600&q=80',
+      badge:'PINK CITY', flights:3,
+      desc:"The Pink City of Rajasthan — grand forts, royal palaces, and vibrant bazaars await you.",
+      places:['Amber Fort','City Palace','Hawa Mahal','Jantar Mantar','Nahargarh Fort'],
+      hotels:['Rambagh Palace (5★)','Oberoi Rajvilas (5★)','Taj Jai Mahal (5★)','ITC Rajputana (5★)'] },
+    { id:'manali',    name:'Manali',       sub:'India · Himachal',   cat:'hill',     price:'₹2,800', tags:['Adventure','Snow','Trekking','Nature'],
+      img:'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80',
+      badge:'HILL STATION', flights:2,
+      desc:"Gateway to the Himalayas — snow-capped peaks, lush valleys, and endless adventure.",
+      places:['Rohtang Pass','Solang Valley','Hadimba Temple','Old Manali','Beas River'],
+      hotels:['The Himalayan (5★)','Club Mahindra (4★)','Span Resort (4★)','Holiday Inn Manali (4★)'] },
+    { id:'varanasi',  name:'Varanasi',     sub:'India · UP',         cat:'spiritual',price:'₹1,500', tags:['Spiritual','Heritage','Ghats','Culture'],
+      img:'https://images.unsplash.com/photo-1561361058-c24e021e2978?w=600&q=80',
+      badge:'SPIRITUAL CITY', flights:3,
+      desc:"One of the world's oldest cities — sacred ghats, ancient temples, and timeless spirituality.",
+      places:['Dashashwamedh Ghat','Kashi Vishwanath Temple','Sarnath','Assi Ghat','Manikarnika Ghat'],
+      hotels:['Taj Ganges (5★)','BrijRama Palace (5★)','Radisson Varanasi (4★)','Gateway Hotel (4★)'] },
+    { id:'bangalore', name:'Bangalore',    sub:'India · Karnataka',  cat:'metro',    price:'₹1,600', tags:['Tech','Gardens','Food','Nightlife'],
+      img:'https://images.unsplash.com/photo-1596176530529-78163a4f7af2?w=600&q=80',
+      badge:'GARDEN CITY', flights:5,
+      desc:"India's Silicon Valley — vibrant tech hub with lush gardens, amazing food, and bustling nightlife.",
+      places:['Lalbagh Garden','Cubbon Park','Bangalore Palace','ISKCON Temple','Commercial Street'],
+      hotels:['The Leela Palace (5★)','ITC Windsor (5★)','Taj West End (5★)','Oberoi (5★)'] },
+    { id:'coimbatore',name:'Coimbatore',   sub:'India · Tamil Nadu', cat:'metro',    price:'₹900',  tags:['Industry','Nature','Temples','Food'],
+      img:'https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=600&q=80',
+      badge:'MANCHESTER OF SOUTH', flights:4,
+      desc:"South India's textile capital — gateway to Ooty and Munnar, with rich culture and delicious food.",
+      places:['Marudamalai Temple','VOC Park','Dhyanalinga','Perur Pateeswarar Temple','Gedee Car Museum'],
+      hotels:['Residency Towers (4★)','Le Meridien (5★)','Hotel Kovai (4★)','Radisson Blu (4★)'] },
+  ];
+
+  let activeDestCat = 'all';
+  function filterDest(cat, btn) {
+    activeDestCat = cat;
+    document.querySelectorAll('.dp-pill').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    renderDestinations();
+  }
+
+  function renderDestinations() {
+    const grid = document.getElementById('destGrid');
+    if (!grid) return;
+    const filtered = activeDestCat === 'all' ? DESTINATIONS : DESTINATIONS.filter(d => d.cat === activeDestCat);
+    grid.innerHTML = filtered.map(d => `
+      <div class="dest-card" onclick="openDestModal('${d.id}')">
+        <div class="dc-img-wrap">
+          <img class="dc-img" src="${d.img}" alt="${d.name}" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(135deg,var(--red),var(--red-dark))'"/>
+          <div class="dc-badge">${d.badge}</div>
+          <div class="dc-price">${d.price}</div>
+        </div>
+        <div class="dc-body">
+          <div class="dc-name">${d.name}</div>
+          <div class="dc-sub">${d.sub}</div>
+          <div class="dc-tags">${d.tags.map(t=>`<span class="dc-tag">${t}</span>`).join('')}</div>
+          <div class="dc-desc">${d.desc}</div>
+          <div class="dc-footer">
+            <span class="dc-flights">✈ ${d.flights} daily flights</span>
+            <button class="dc-book-btn" onclick="event.stopPropagation();openDestModal('${d.id}')">Explore →</button>
+          </div>
+        </div>
+      </div>`).join('');
+  }
+
+  function openDestModal(id) {
+    const d = DESTINATIONS.find(x => x.id === id);
+    if (!d) return;
+    document.getElementById('destModalContent').innerHTML = `
+      <div class="dm-img-wrap">
+        <img class="dm-img" src="${d.img}" alt="${d.name}" onerror="this.style.display='none'"/>
+        <div class="dm-img-overlay">
+          <div class="dm-badge">${d.badge}</div>
+          <div class="dm-title">${d.name}</div>
+          <div class="dm-sub">${d.sub}</div>
+        </div>
+      </div>
+      <div class="dm-body">
+        <p class="dm-desc">${d.desc}</p>
+        <div class="dm-section">
+          <div class="dm-section-title">🏛 Famous Places to Visit</div>
+          <div class="dm-places">${d.places.map(p=>`<div class="dm-place-item">📍 ${p}</div>`).join('')}</div>
+        </div>
+        <div class="dm-section">
+          <div class="dm-section-title">🏨 Top Hotels</div>
+          <div class="dm-hotels">${d.hotels.map(h=>`<div class="dm-hotel-item">🏨 ${h}</div>`).join('')}</div>
+        </div>
+        <div class="dm-actions">
+          <span class="dm-price-big">${d.price} onwards</span>
+          <button class="btn-main" onclick="closeDestModal();showPanel('registerPanel')">✈ Book Flight</button>
+        </div>
+      </div>`;
+    document.getElementById('destModalBg').style.display = 'block';
+    document.getElementById('destModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeDestModal() {
+    document.getElementById('destModalBg').style.display = 'none';
+    document.getElementById('destModal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  /* ── FLIGHT STATUS BOARD ── */
+  function renderStatusBoard() {
+    const board = document.getElementById('statusBoard');
+    if (!board) return;
+    board.innerHTML = TT_FLIGHTS.slice(0,6).map(f => {
+      const s = STATUS_MAP[f.status] || STATUS_MAP.ontime;
+      return `<div class="sb-row">
+        <div class="sb-fn" style="color:var(--red)">${f.flight_no}</div>
+        <div class="sb-route">${f.source} <span style="color:var(--gray-300)">→</span> ${f.destination}</div>
+        <div class="sb-time">${f.departure}</div>
+        <div><span class="tt-status ${s.cls}">${s.txt}</span></div>
+      </div>`;
+    }).join('');
+  }
+
+  function searchFlightStatus() {
+    const q = (document.getElementById('statusSearch')?.value||'').toLowerCase();
+    const result = document.getElementById('statusResult');
+    if (!q) { result.innerHTML=''; renderStatusBoard(); return; }
+    const f = TT_FLIGHTS.find(x => x.flight_no.toLowerCase().includes(q));
+    if (!f) {
+      result.innerHTML = `<div class="status-not-found">No flight found for "${q.toUpperCase()}"</div>`;
+      return;
+    }
+    const s = STATUS_MAP[f.status] || STATUS_MAP.ontime;
+    result.innerHTML = `
+      <div class="status-found-card">
+        <div class="sfc-top">
+          <span class="sfc-fn">${f.flight_no}</span>
+          <span class="tt-status ${s.cls}" style="font-size:13px">${s.txt}</span>
+        </div>
+        <div class="sfc-route">${f.source} <strong>→</strong> ${f.destination}</div>
+        <div class="sfc-grid">
+          <div class="sfc-field"><span>Departure</span><strong>${f.departure}</strong></div>
+          <div class="sfc-field"><span>Arrival</span><strong>${f.arrival}</strong></div>
+          <div class="sfc-field"><span>Duration</span><strong>${durStr(f.departure,f.arrival)}</strong></div>
+          <div class="sfc-field"><span>Aircraft</span><strong>${f.aircraft}</strong></div>
+          <div class="sfc-field"><span>Airline</span><strong>${f.airline}</strong></div>
+          <div class="sfc-field"><span>Baggage</span><strong>${MGMT_FLIGHTS.find(x=>x.flight_no===f.flight_no)?.baggage_limit||'--'} kg</strong></div>
+        </div>
+      </div>`;
+  }
+
+  /* Init dashboard on load */
+  renderHomeTimetable();
+  renderStatusBoard();
+</script>
+
+<script>
+  /* ══ EMU 8086 STATUS ══ */
+  let emuPanelOpen = false;
+  document.getElementById('emuStatusBadge').addEventListener('click', () => {
+    emuPanelOpen ? closeEmuPanel() : openEmuPanel();
+  });
+  function openEmuPanel() {
+    emuPanelOpen = true;
+    document.getElementById('emuPanel').classList.add('visible');
+    fetchEmuStatus(true);
+  }
+  function closeEmuPanel() {
+    emuPanelOpen = false;
+    document.getElementById('emuPanel').classList.remove('visible');
+  }
+
+  async function fetchEmuStatus(showInPanel = false) {
+    const dot = document.getElementById('emuDot');
+    const label = document.getElementById('emuState');
+    try {
+      const res = await fetch('/emu_status');
+      const data = await res.json();
+      if (data.connected && data.data_ready) {
+        dot.className = 'emu-dot online';
+        label.textContent = 'ONLINE' + (data.uptime_tick || 1);
+      } else if (data.connected && !data.data_ready) {
+        dot.className = 'emu-dot checking';
+        label.textContent = 'EMU OPEN — PRESS F5';
+      } else {
+        dot.className = 'emu-dot offline';
+        label.textContent = 'EMU CLOSED';
+      }
+      if (showInPanel || emuPanelOpen) renderEmuPanel(data);
+    } catch (err) {
+      dot.className = 'emu-dot offline';
+      label.textContent = 'SERVER DOWN';
+      if (showInPanel || emuPanelOpen) {
+        document.getElementById('emuPanelContent').innerHTML =
+          `<div style="color:var(--red);text-align:center;padding:20px;font-size:12px">
+            Flask server not running.<br><br>Open terminal and run:<br>
+            <b style="color:#16a34a;font-size:13px">python app.py</b>
+           </div>`;
+      }
+    }
+  }
+
+  function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  function renderEmuPanel(d) {
+    const alive = d.connected, ready = d.data_ready;
+    const p = d.passenger || {}, cpu = d.cpu_state || {};
+    const stColor = alive ? (ready ? '#16a34a' : '#d97706') : '#C8102E';
+    const stText = alive ? (ready ? '● CONNECTED — DATA READY' : '● EMU OPEN — WAITING FOR F5') : '● EMU 8086 CLOSED';
+
+    const statusBlock = `
+      <div class="emu-row"><span class="emu-key">EMU 8086</span><span style="color:${stColor};font-weight:700">${stText}</span></div>
+      <div class="emu-row"><span class="emu-key">BACKEND</span><span style="color:${stColor}">${d.status_code}</span></div>
+      <div class="emu-row"><span class="emu-key">OUTPUT FILE</span><span style="color:${ready?'#185FA5':'#B8B5AC'};font-size:10px">${ready ? esc(d.file_path) : 'Not written yet'}</span></div>
+      ${ready ? `<div class="emu-row"><span class="emu-key">WRITTEN AT</span><span style="color:#185FA5">${d.file_modified}</span></div>` : ''}`;
+
+    const howTo = !alive ? `
+      <div class="emu-panel-section">
+        <div class="emu-section-title">HOW TO CONNECT</div>
+        <div class="emu-trace-box">
+          <b style="color:#d97706">1.</b> Open <b>EMU 8086</b> → badge turns yellow<br>
+          <b style="color:#d97706">2.</b> File → Open → <b style="color:#16a34a">AIRPORT_MAIN.asm</b><br>
+          <b style="color:#d97706">3.</b> Press <b style="color:#16a34a">F5</b> to Run<br>
+          <b style="color:#d97706">4.</b> Badge turns <b style="color:#16a34a">GREEN ✅</b>
+        </div>
+      </div>` : '';
+
+    const waitF5 = (alive && !ready) ? `
+      <div class="emu-panel-section">
+        <div class="emu-section-title">EMU IS OPEN — STEPS TO GO GREEN</div>
+        <div class="emu-trace-box">
+          EMU 8086 is <b style="color:#d97706">OPEN ✅</b><br><br>
+          <b style="color:#d97706">Step 1:</b> File → Open → <b style="color:#16a34a">AIRPORT_MAIN.asm</b><br>
+          <b style="color:#d97706">Step 2:</b> Press <b style="color:#16a34a">F5</b> to Run<br>
+          <b style="color:#d97706">Step 3:</b> Badge turns <b style="color:#16a34a">GREEN ✅</b> automatically<br><br>
+          <b style="color:#C8102E">If still yellow after F5:</b><br>
+          Find <b>skyport_out.txt</b> in <b>C:\emu8086\</b><br>
+          Copy it to your project's <b style="color:#16a34a">asm\</b> folder.
+        </div>
+      </div>` : '';
+
+    const passengerBlock = ready ? `
+      <div class="emu-panel-section">
+        <div class="emu-section-title">PASSENGER DATA — FROM EMU 8086 ASM</div>
+        ${[['NAME',p.name],['BOOKING REF',p.booking_ref],['FLIGHT',p.flight_no+' — '+p.airline],
+           ['ROUTE',(p.source||'')+' → '+(p.destination||'')],['DATE',p.flight_date],
+           ['SEAT',p.seat],['BAGGAGE',p.baggage_weight+'kg (limit '+p.baggage_limit+'kg)'],
+           ['EXCESS',p.excess_kg>0?p.excess_kg+'kg → Rs.'+p.extra_charge:'NONE ✅'],
+           ['GATE',p.gate+'  TERMINAL: '+p.terminal],['BOARDING',p.boarding_time+'  BP: '+p.bp_number]
+        ].map(([k,v])=>`<div class="emu-row"><span class="emu-key">${k}</span><span style="color:#185FA5">${v||'—'}</span></div>`).join('')}
+      </div>` : '';
+
+    const cpuBlock = ready ? `
+      <div class="emu-panel-section">
+        <div class="emu-section-title">8086 CPU REGISTERS</div>
+        ${['AX','BX','CX','DX','SI','BP','ZF','CF','SF'].map(r=>
+          `<div class="emu-row"><span class="emu-key">${r}</span><span style="color:#16a34a">${cpu[r]??'—'}</span></div>`
+        ).join('')}
+      </div>` : '';
+
+    const traceBlock = `
+      <div class="emu-panel-section">
+        <div class="emu-section-title">AIRPORT_MAIN.asm — ${ready ? 'EXECUTED' : alive ? 'WAITING FOR F5' : 'EMU CLOSED'}</div>
+        <div class="emu-trace-box">
+          ${(d.asm_trace||[]).map(t=>`<div style="color:${t.startsWith(';')?'#B8B5AC':'var(--gray-700)'}">${esc(t)}</div>`).join('')}
+        </div>
+      </div>`;
+
+    document.getElementById('emuPanelContent').innerHTML =
+      statusBlock + howTo + waitF5 + passengerBlock + cpuBlock + traceBlock +
+      `<button class="emu-refresh-btn" onclick="fetchEmuStatus(true)">↻ REFRESH</button>`;
+  }
+
+  fetchEmuStatus();
+  setInterval(fetchEmuStatus, 3000);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,9 @@
+NAME=murali tharan
+EMAIL=shanthi@gmail.com
+PHONE=9025463116
+FLIGHT_NO=6E123
+AIRLINE=IndiGo
+SOURCE=Chennai
+DESTINATION=Coimbatore
+FLIGHT_DATE=2026-05-29
+BAGGAGE_LIMIT=35
